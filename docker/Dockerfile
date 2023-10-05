@@ -1,4 +1,4 @@
-# docker build -t my-redis-image .
+# docker build -t redis-image .
 
 FROM ubuntu:latest
 

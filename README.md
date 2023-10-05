@@ -18,6 +18,11 @@ This repository contains examples of using Redis for storing and retrieving dict
 ---
 ## Usage
 
+0. 먼저 `redis-server`를 실행시킨다
+    ```bash
+    redis-server &
+    ```
+
 1. Run `redis-cli` in the background after starting the Redis container:
     ```bash
     redis-cli &

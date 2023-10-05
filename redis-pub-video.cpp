@@ -8,11 +8,15 @@
 
 using namespace std::literals;
 
+const bool INFINITE_LOOP = true;
+// pub 배속 관련한 변수
+const int PUB_SPEED = 4; // 배속
+
 void producerThread(redisContext* redis) {
     std::this_thread::sleep_for(std::chrono::seconds(1)); // Wait for the consumer thread to start first
 
-    const char* channel = "channel_name";
-    const char* video_path = "kids.mp4";
+    const char* channel = "nas:image:ir";
+    const char* video_path = "ir_hannara.mp4";
 
     cv::VideoCapture video(video_path);
     if (!video.isOpened()) {
@@ -22,20 +26,30 @@ void producerThread(redisContext* redis) {
     
     double frameRate = video.get(cv::CAP_PROP_FPS);
     std::cout << "frameRate: " << frameRate << "FPS" << std::endl;
-    int sleepDuration = static_cast<int>(1000 / frameRate); // Calculate sleep duration in milliseconds
+    float sleepDuration = 1000.0 / frameRate; // Calculate sleep duration in milliseconds
+
+    // 배속 관련
+    sleepDuration = sleepDuration / PUB_SPEED;
+
+    std::cout << "sleepDuration: " << sleepDuration << "ms" << std::endl;
 
     std::chrono::high_resolution_clock::time_point startTime, endTime;
 
     while (true) {
-
         startTime = std::chrono::high_resolution_clock::now();
 
         cv::Mat frame;
         video >> frame;
         
         if (frame.empty()) {
-            std::cout << "End of video reached." << std::endl;
-            break;
+            if (INFINITE_LOOP) {
+                video.set(cv::CAP_PROP_POS_FRAMES, 0);
+                continue;
+            }
+            else {
+                std::cout << "End of video reached." << std::endl;
+                break;
+            }
         }
 
         // 16'은 'CV_8UC3'에 해당하며, 이는 3개의 채널이 있는 8비트 부호 없는 정수
@@ -81,7 +95,7 @@ void producerThread(redisContext* redis) {
 
         std::cout << "Elapsed time: " << duration << " ms, File size: " << buffer.size() << std::endl;
 
-        int sleepAdjustment = sleepDuration - duration;
+        int sleepAdjustment = static_cast<int>(sleepDuration) - duration;
         if (sleepAdjustment > 0) {
             std::cout << "sleepAdjustment time: " << sleepAdjustment << "ms" << std::endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(sleepAdjustment));

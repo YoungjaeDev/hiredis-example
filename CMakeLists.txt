@@ -46,6 +46,15 @@ add_executable(redis-sub redis-sub-video-async.cpp)
 target_compile_options(redis-sub PUBLIC ${HIREDIS_CFLAGS})
 target_link_libraries(redis-sub ${HIREDIS_LIBRARIES} ${OpenCV_LIBS} ${LIBEVENT_LIBRARIES} nlohmann_json::nlohmann_json Threads::Threads)
 
-INSTALL(FILES sample.jpg eo.jpg race.mp4 kids.mp4
-	DESTINATION ${CMAKE_BINARY_DIR}
+set(MEDIA_FILES
+    sample.jpg
+    eo.jpg
+    race.mp4
+    kids.mp4
+    hannara.mp4
+    ir_hannara.mp4
+)
+
+install(FILES ${MEDIA_FILES}
+    DESTINATION ${CMAKE_BINARY_DIR}
 )
