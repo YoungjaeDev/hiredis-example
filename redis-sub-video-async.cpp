@@ -42,6 +42,12 @@ void handleMessage(redisAsyncContext* context, void* reply, void* privateData) {
             // cv::imwrite(outputFilePath, image);
 
             // std::cout << "Image saved as " << outputFilePath << std::endl;
+
+            // Create a named window
+            cv::namedWindow(windowName, cv::WINDOW_NORMAL);
+
+            // Set the window size to Full HD
+            cv::resizeWindow(windowName, 1920, 1080);
             cv::imshow(windowName, image);
             cv::waitKey(1); // Process OpenCV events (required for the window to update)
         }   
