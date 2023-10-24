@@ -15,6 +15,9 @@ const int PUB_SPEED = 4; // 배속
 void producerThread(redisContext* redis) {
     std::this_thread::sleep_for(std::chrono::seconds(1)); // Wait for the consumer thread to start first
 
+    // const char* channel = "nas:image:eo";
+    // const char* video_path = "hannara.mp4";
+    
     const char* channel = "nas:image:ir";
     const char* video_path = "ir_hannara.mp4";
 
